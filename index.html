@@ -108,15 +108,16 @@
                 </div>
                 <div class="pt-1.5 space-y-1">
                     <div class="flex justify-between text-[11px]">
-                        <span class="text-zinc-400">ปรับละเอียด (Fine-tune)</span>
-                        <span id="rFineVal" class="font-medium text-zinc-600">±฿0</span>
+                        <span class="text-zinc-400">ปรับละเอียดยอดความสนิท</span>
+                        <span id="rSliderVal" class="font-medium text-zinc-600">+฿300</span>
                     </div>
-                    <input type="range" id="relFineSlider" min="-500" max="1000" step="100" value="0"
+                    <input type="range" id="relSlider" min="0" max="3500" step="100" value="300"
                         class="w-full h-1.5 bg-zinc-200 rounded-lg cursor-pointer">
                     <div class="flex justify-between text-[10px] text-zinc-400">
-                        <span>-฿500</span>
-                        <span>0</span>
-                        <span>+฿1,000</span>
+                        <span>฿0</span>
+                        <span>฿1,000</span>
+                        <span>฿2,500</span>
+                        <span>฿3,500</span>
                     </div>
                 </div>
             </div>
@@ -240,8 +241,6 @@
         const state = {
             V: 1000,
             N: 1.0,
-            R_base: 300,
-            R_fine: 0,
             R: 300,
             S: 1.0,
             I: 45000,
@@ -283,7 +282,6 @@
         // 5. ฟังก์ชันคำนวณหลักและอัปเดต UI
         function calculate() {
             // คำนวณตามสูตร
-            state.R = state.R_base + state.R_fine;
             const cTarget = Math.max(0, Math.round(((state.V * state.N) + state.R) * state.S));
             const bMax = Math.round((state.I * (state.P / 100)) / state.W);
             const hMin = state.H > 0 ? state.H + 200 : 0;
@@ -305,10 +303,8 @@
 
             // อัปเดต Labels ฝั่งซ้าย
             document.getElementById('vLabel').textContent = `฿${state.V.toLocaleString()} / คน`;
-            const rSign = state.R >= 0 ? '+' : '-';
-            document.getElementById('rLabel').textContent = `${rSign}฿${Math.abs(state.R).toLocaleString()}`;
-            const fineSign = state.R_fine > 0 ? '+' : (state.R_fine < 0 ? '-' : '±');
-            document.getElementById('rFineVal').textContent = `${fineSign}฿${Math.abs(state.R_fine).toLocaleString()}`;
+            document.getElementById('rLabel').textContent = `+฿${state.R.toLocaleString()}`;
+            document.getElementById('rSliderVal').textContent = `+฿${state.R.toLocaleString()}`;
             document.getElementById('pVal').textContent = `${state.P}%`;
             document.getElementById('wVal').textContent = `${state.W} งาน`;
 
@@ -342,7 +338,7 @@
         }
 
         // 6. Helper ผูก Event สำหรับปุ่ม Segmented Controls
-        function setupSegmentedGroup(groupId, stateKey, onSelect) {
+        function setupSegmentedGroup(groupId, stateKey) {
             const container = document.getElementById(groupId);
             const buttons = container.querySelectorAll('button');
             buttons.forEach(btn => {
@@ -354,11 +350,23 @@
                     btn.classList.remove('text-zinc-600');
                     btn.classList.add('bg-white', 'text-zinc-900', 'shadow-sm');
                     state[stateKey] = parseFloat(btn.dataset.val);
-                    if (onSelect) onSelect(btn);
                     state.selectedTier = 'rec';
                     updateTierButtons();
                     calculate();
                 });
+            });
+        }
+
+        function updateRelButtons(val) {
+            const buttons = document.querySelectorAll('#relGroup button');
+            buttons.forEach(btn => {
+                if (parseFloat(btn.dataset.val) === val) {
+                    btn.classList.remove('text-zinc-600');
+                    btn.classList.add('bg-white', 'text-zinc-900', 'shadow-sm');
+                } else {
+                    btn.classList.remove('bg-white', 'text-zinc-900', 'shadow-sm');
+                    btn.classList.add('text-zinc-600');
+                }
             });
         }
 
@@ -377,13 +385,24 @@
         setupSegmentedGroup('venueGroup', 'V');
         setupSegmentedGroup('attendGroup', 'N');
         setupSegmentedGroup('seniorGroup', 'S');
-        setupSegmentedGroup('relGroup', 'R_base', () => {
-            state.R_fine = 0;
-            document.getElementById('relFineSlider').value = 0;
+
+        // ผูก Event สำหรับระดับความสนิท (ทั้งปุ่ม Preset และ Slider ทำงานร่วมกันแบบสองทาง)
+        document.querySelectorAll('#relGroup button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const val = parseFloat(btn.dataset.val);
+                state.R = val;
+                document.getElementById('relSlider').value = val;
+                updateRelButtons(val);
+                state.selectedTier = 'rec';
+                updateTierButtons();
+                calculate();
+            });
         });
 
-        document.getElementById('relFineSlider').addEventListener('input', e => {
-            state.R_fine = parseInt(e.target.value, 10);
+        document.getElementById('relSlider').addEventListener('input', e => {
+            const val = parseInt(e.target.value, 10);
+            state.R = val;
+            updateRelButtons(val);
             state.selectedTier = 'rec';
             updateTierButtons();
             calculate();
