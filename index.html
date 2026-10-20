@@ -120,10 +120,7 @@
 
             <!-- 1. สถานที่จัดงาน -->
             <div class="space-y-2">
-                <div class="flex justify-between text-xs">
-                    <span class="font-medium text-zinc-500">สถานที่จัดงาน</span>
-                    <span id="vLabel" class="font-semibold text-zinc-900">฿1,000 / คน</span>
-                </div>
+                <span class="text-xs font-medium text-zinc-500 block">สถานที่จัดงาน</span>
                 <div class="grid grid-cols-4 gap-1.5 bg-zinc-100 p-1 rounded-xl" id="venueGroup">
                     <button data-val="400"
                         class="py-2.5 text-xs font-medium rounded-lg transition text-zinc-600 hover:text-zinc-900">บ้าน/หอประชุม</button>
@@ -167,7 +164,7 @@
             <div class="space-y-2">
                 <div class="flex justify-between text-xs">
                     <span class="font-medium text-zinc-500">ระดับความสนิท</span>
-                    <span id="rLabel" class="font-semibold text-zinc-900">+฿300</span>
+                    <span id="rLabel" class="font-medium text-zinc-600">คุ้นเคย ทักทายบ่อย</span>
                 </div>
                 <div class="grid grid-cols-4 gap-1.5 bg-zinc-100 p-1 rounded-xl" id="relGroup">
                     <button data-val="0"
@@ -181,16 +178,16 @@
                 </div>
                 <div class="pt-1.5 space-y-1">
                     <div class="flex justify-between text-[11px]">
-                        <span class="text-zinc-400">ปรับละเอียดยอดความสนิท</span>
-                        <span id="rSliderVal" class="font-medium text-zinc-600">+฿300</span>
+                        <span class="text-zinc-400">ปรับความผูกพันละเอียด</span>
+                        <span id="rSliderVal" class="font-medium text-zinc-500">คุ้นเคย ทักทายบ่อย</span>
                     </div>
                     <input type="range" id="relSlider" min="0" max="3500" step="100" value="300"
                         class="w-full h-1.5 bg-zinc-200 rounded-lg cursor-pointer">
                     <div class="flex justify-between text-[10px] text-zinc-400">
-                        <span>฿0</span>
-                        <span>฿1,000</span>
-                        <span>฿2,500</span>
-                        <span>฿3,500</span>
+                        <span>น้อย</span>
+                        <span>ปานกลาง</span>
+                        <span>สนิท</span>
+                        <span>พิเศษ / ซี้ปึ้ก</span>
                     </div>
                 </div>
             </div>
@@ -303,7 +300,18 @@
             if (mobileBanknotes) mobileBanknotes.innerHTML = html;
         }
 
-        // 5. ฟังก์ชันคำนวณหลักและอัปเดต UI
+        // 5. แปลงค่ายอดความสนิทเป็นข้อความบอกระดับความผูกพัน (ไม่แสดงตัวเลขเงิน)
+        function getClosenessText(val) {
+            if (val === 0) return 'รู้จักทั่วไป';
+            if (val <= 300) return 'คุ้นเคย ทักทายบ่อย';
+            if (val <= 700) return 'คุยถูกคอ เริ่มสนิท';
+            if (val <= 1200) return 'สนิท ปรึกษาได้';
+            if (val <= 1800) return 'สนิทมาก ไปมาหาสู่';
+            if (val <= 2500) return 'แก๊งเดียวกัน สนิทมาก';
+            return 'คนพิเศษ ซี้ปึ้กที่สุด';
+        }
+
+        // 6. ฟังก์ชันคำนวณหลักและอัปเดต UI
         function calculate() {
             // คำนวณตามสูตร
             const cTarget = Math.max(0, Math.round(((state.V * state.N) + state.R) * state.S));
@@ -325,10 +333,14 @@
 
             const activeAmount = tiers[state.selectedTier];
 
-            // อัปเดต Labels ฝั่งซ้าย
-            document.getElementById('vLabel').textContent = `฿${state.V.toLocaleString()} / คน`;
-            document.getElementById('rLabel').textContent = `+฿${state.R.toLocaleString()}`;
-            document.getElementById('rSliderVal').textContent = `+฿${state.R.toLocaleString()}`;
+            // อัปเดต Labels ฝั่งซ้าย (แสดงระดับความรู้สึก/ความผูกพัน ไม่แสดงตัวเลขเงิน)
+            const vLabel = document.getElementById('vLabel');
+            if (vLabel) vLabel.textContent = ``;
+            const closenessDesc = getClosenessText(state.R);
+            const rLabel = document.getElementById('rLabel');
+            if (rLabel) rLabel.textContent = closenessDesc;
+            const rSliderVal = document.getElementById('rSliderVal');
+            if (rSliderVal) rSliderVal.textContent = closenessDesc;
             document.getElementById('pVal').textContent = `${state.P}%`;
             const wValEl = document.getElementById('wVal');
             if (wValEl) wValEl.textContent = `${state.W} งาน`;
