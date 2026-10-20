@@ -1,0 +1,15 @@
+{
+  "name": "saisong",
+  "version": "1.0.0",
+  "description": "Thai Wedding Envelope Calculator (ระบบคำนวณเงินใส่ซองงานแต่งงาน)",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "keywords": [
+    "thai-wedding",
+    "wedding-envelope",
+    "calculator"
+  ],
+  "author": "Poonpipat",
+  "license": "MIT"
+}
