@@ -147,7 +147,20 @@
 
                 <div class="pt-1">
                     <div class="flex justify-between text-xs mb-1.5">
-                        <span class="font-medium text-zinc-500">งบสังคม</span>
+                        <div class="relative inline-flex items-center">
+                            <span class="font-medium text-zinc-500">งบสังคม</span>
+                            <button type="button" id="budgetInfoBtn" class="ml-1 text-zinc-400 hover:text-zinc-600 focus:outline-none cursor-pointer" aria-label="ข้อมูลเพิ่มเติมเกี่ยวกับงบสังคม">
+                                <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                            <!-- Tooltip สำหรับ Desktop (hover) และ Mobile (tap) -->
+                            <div id="budgetTooltip" class="absolute left-0 bottom-full mb-2 hidden w-64 p-3 bg-zinc-900 text-zinc-200 text-xs leading-relaxed rounded-xl shadow-xl border border-zinc-800 z-30 pointer-events-auto">
+                                <p class="font-semibold text-white mb-1">งบสังคมคืออะไร?</p>
+                                <p class="text-zinc-300 text-[11px]">สัดส่วนของรายได้ต่อเดือนที่คุณกันไว้สำหรับใส่ซองหรืองานสังสรรค์ (ตามหลักการเงินทั่วไปแนะนำอยู่ที่ 3% - 5% เพื่อไม่ให้กระทบเงินออมและค่าใช้จ่ายจำเป็น)</p>
+                                <div class="absolute left-5 top-full w-2 h-2 bg-zinc-900 border-r border-b border-zinc-800 rotate-45 -mt-1"></div>
+                            </div>
+                        </div>
                         <span id="pVal" class="font-semibold text-zinc-900">4%</span>
                     </div>
                     <input type="range" id="budgetSlider" min="1" max="10" step="0.5" value="4"
@@ -433,6 +446,26 @@
             weddingSlider.addEventListener('input', e => {
                 state.W = parseInt(e.target.value, 10);
                 calculate();
+            });
+        }
+
+        // จัดการ Tooltip ข้อมูลงบสังคม (Desktop: Hover, Mobile: Tap)
+        const budgetInfoBtn = document.getElementById('budgetInfoBtn');
+        const budgetTooltip = document.getElementById('budgetTooltip');
+
+        if (budgetInfoBtn && budgetTooltip) {
+            budgetInfoBtn.addEventListener('mouseenter', () => budgetTooltip.classList.remove('hidden'));
+            budgetInfoBtn.addEventListener('mouseleave', () => budgetTooltip.classList.add('hidden'));
+
+            budgetInfoBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                budgetTooltip.classList.toggle('hidden');
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!budgetInfoBtn.contains(e.target) && !budgetTooltip.contains(e.target)) {
+                    budgetTooltip.classList.add('hidden');
+                }
             });
         }
 
