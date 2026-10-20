@@ -106,6 +106,19 @@
                     <button data-val="2500"
                         class="py-2 text-xs font-medium rounded-lg transition text-zinc-600">สนิทมาก</button>
                 </div>
+                <div class="pt-1.5 space-y-1">
+                    <div class="flex justify-between text-[11px]">
+                        <span class="text-zinc-400">ปรับละเอียด (Fine-tune)</span>
+                        <span id="rFineVal" class="font-medium text-zinc-600">±฿0</span>
+                    </div>
+                    <input type="range" id="relFineSlider" min="-500" max="1000" step="100" value="0"
+                        class="w-full h-1.5 bg-zinc-200 rounded-lg cursor-pointer">
+                    <div class="flex justify-between text-[10px] text-zinc-400">
+                        <span>-฿500</span>
+                        <span>0</span>
+                        <span>+฿1,000</span>
+                    </div>
+                </div>
             </div>
 
             <hr class="border-zinc-100">
@@ -220,13 +233,15 @@
         // 1. ชุดตัวเลขมงคลงานแต่ง (ข้ามเลขคี่อวมงคล 700, 1100, 1300, 1700, 1900)
         const AUSPICIOUS_NUMBERS = [
             400, 500, 600, 800, 900, 1000, 1200, 1500, 1600, 1800,
-            2000, 2200, 2400, 2600, 2800, 3000, 3200, 3600, 4000, 5000, 6000, 8000, 10000
+            2000, 2200, 2400, 2600, 2800, 3000, 3200, 3600, 3800, 4000, 4600, 5000, 6000, 8000, 10000
         ];
 
         // 2. State หลักของแอป
         const state = {
             V: 1000,
             N: 1.0,
+            R_base: 300,
+            R_fine: 0,
             R: 300,
             S: 1.0,
             I: 45000,
@@ -268,7 +283,8 @@
         // 5. ฟังก์ชันคำนวณหลักและอัปเดต UI
         function calculate() {
             // คำนวณตามสูตร
-            const cTarget = Math.round(((state.V * state.N) + state.R) * state.S);
+            state.R = state.R_base + state.R_fine;
+            const cTarget = Math.max(0, Math.round(((state.V * state.N) + state.R) * state.S));
             const bMax = Math.round((state.I * (state.P / 100)) / state.W);
             const hMin = state.H > 0 ? state.H + 200 : 0;
 
@@ -289,7 +305,10 @@
 
             // อัปเดต Labels ฝั่งซ้าย
             document.getElementById('vLabel').textContent = `฿${state.V.toLocaleString()} / คน`;
-            document.getElementById('rLabel').textContent = `+฿${state.R.toLocaleString()}`;
+            const rSign = state.R >= 0 ? '+' : '-';
+            document.getElementById('rLabel').textContent = `${rSign}฿${Math.abs(state.R).toLocaleString()}`;
+            const fineSign = state.R_fine > 0 ? '+' : (state.R_fine < 0 ? '-' : '±');
+            document.getElementById('rFineVal').textContent = `${fineSign}฿${Math.abs(state.R_fine).toLocaleString()}`;
             document.getElementById('pVal').textContent = `${state.P}%`;
             document.getElementById('wVal').textContent = `${state.W} งาน`;
 
@@ -323,16 +342,19 @@
         }
 
         // 6. Helper ผูก Event สำหรับปุ่ม Segmented Controls
-        function setupSegmentedGroup(groupId, stateKey) {
+        function setupSegmentedGroup(groupId, stateKey, onSelect) {
             const container = document.getElementById(groupId);
             const buttons = container.querySelectorAll('button');
             buttons.forEach(btn => {
                 btn.addEventListener('click', () => {
                     buttons.forEach(b => {
-                        b.className = 'py-2 text-xs font-medium rounded-lg transition text-zinc-600 hover:text-zinc-900';
+                        b.classList.remove('bg-white', 'text-zinc-900', 'shadow-sm');
+                        b.classList.add('text-zinc-600');
                     });
-                    btn.className = 'py-2 text-xs font-medium rounded-lg transition bg-white text-zinc-900 shadow-sm';
+                    btn.classList.remove('text-zinc-600');
+                    btn.classList.add('bg-white', 'text-zinc-900', 'shadow-sm');
                     state[stateKey] = parseFloat(btn.dataset.val);
+                    if (onSelect) onSelect(btn);
                     state.selectedTier = 'rec';
                     updateTierButtons();
                     calculate();
@@ -355,7 +377,17 @@
         setupSegmentedGroup('venueGroup', 'V');
         setupSegmentedGroup('attendGroup', 'N');
         setupSegmentedGroup('seniorGroup', 'S');
-        setupSegmentedGroup('relGroup', 'R');
+        setupSegmentedGroup('relGroup', 'R_base', () => {
+            state.R_fine = 0;
+            document.getElementById('relFineSlider').value = 0;
+        });
+
+        document.getElementById('relFineSlider').addEventListener('input', e => {
+            state.R_fine = parseInt(e.target.value, 10);
+            state.selectedTier = 'rec';
+            updateTierButtons();
+            calculate();
+        });
 
         document.querySelectorAll('#tierGroup button').forEach(btn => {
             btn.addEventListener('click', () => {

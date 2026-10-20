@@ -8,7 +8,7 @@ $$\text{Final Envelope} = \text{Round}_{\text{Auspicious}}\Big( \max\big(H_{\tex
 * **Monthly Budget Cap per Wedding ($B_{\max}$):** $\frac{I \times (P / 100)}{W}$
 * **Historical Reciprocity Floor ($H_{\text{min}}$):** If $H > 0$, then $H + 200$, else $0$.
 
-## 2. Variables (ตัวแปรทั้ง 7 ตัว)
+## 2. Variables (ตัวแปรทั้ง 8 ตัว)
 1. **$V$ (Venue Cost):** บ้าน/หอประชุม (400), ร้านอาหาร/สโมสร (600), โรงแรม 3-4 ดาว (1,000), โรงแรม 5 ดาว (1,800)
 2. **$N$ (Attendees):** ฝากซอง (0.5), ไปคนเดียว (1.0), ไปเป็นคู่ 2 คน (1.8)
 3. **$R$ (Relationship Value):** คนรู้จัก (0), เพื่อนร่วมงาน/เพื่อนสมัยเรียน (300), เพื่อนสนิท/ญาติ (1,000), สนิทมาก/แก๊งเดียวกัน (2,500) + Fine-tune slider (-500 to +1,000)
