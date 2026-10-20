@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://poonpipat16092.github.io/saisong/sitemap.xml
