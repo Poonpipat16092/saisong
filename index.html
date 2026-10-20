@@ -95,12 +95,38 @@
             <!-- ข้อมูลอ้างอิงด้านล่าง (Metrics) -->
             <div class="pt-4 md:pt-6 border-t border-zinc-800/80 mt-4 md:mt-8 grid grid-cols-2 gap-4 text-xs">
                 <div>
-                    <span class="text-zinc-500 block">เกณฑ์สังคม</span>
-                    <span id="metricTarget" class="font-semibold text-zinc-300">฿1,300</span>
+                    <div class="relative inline-flex items-center">
+                        <span class="text-zinc-500">เกณฑ์สังคม</span>
+                        <button type="button" id="targetInfoBtn" class="ml-1 text-zinc-500 hover:text-zinc-300 focus:outline-none cursor-pointer" aria-label="เกณฑ์สังคมคืออะไร">
+                            <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <!-- Tooltip -->
+                        <div id="targetTooltip" class="absolute left-0 bottom-full mb-2 hidden w-56 p-2.5 bg-zinc-800 text-zinc-200 text-xs leading-relaxed rounded-xl shadow-xl border border-zinc-700 z-30 pointer-events-auto">
+                            <p class="font-semibold text-white mb-0.5">เกณฑ์สังคม</p>
+                            <p class="text-zinc-300 text-[11px]">ยอดประเมินที่เหมาะสมตามค่าอาหารสถานที่จัดงาน ระดับความสนิท และสถานะความอาวุโส</p>
+                            <div class="absolute left-5 top-full w-2 h-2 bg-zinc-800 border-r border-b border-zinc-700 rotate-45 -mt-1"></div>
+                        </div>
+                    </div>
+                    <span id="metricTarget" class="font-semibold text-zinc-300 block mt-0.5">฿1,300</span>
                 </div>
                 <div>
-                    <span class="text-zinc-500 block">เพดานงบ/งาน</span>
-                    <span id="metricCap" class="font-semibold text-zinc-300">฿1,800</span>
+                    <div class="relative inline-flex items-center">
+                        <span class="text-zinc-500">เพดานงบ/งาน</span>
+                        <button type="button" id="capInfoBtn" class="ml-1 text-zinc-500 hover:text-zinc-300 focus:outline-none cursor-pointer" aria-label="เพดานงบคืออะไร">
+                            <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <!-- Tooltip -->
+                        <div id="capTooltip" class="absolute right-0 bottom-full mb-2 hidden w-56 p-2.5 bg-zinc-800 text-zinc-200 text-xs leading-relaxed rounded-xl shadow-xl border border-zinc-700 z-30 pointer-events-auto">
+                            <p class="font-semibold text-white mb-0.5">เพดานงบต่อซอง</p>
+                            <p class="text-zinc-300 text-[11px]">งบสูงสุดที่ปลอดภัยทางการเงิน คำนวณจากรายได้และสัดส่วนงบสังคมที่คุณตั้งไว้</p>
+                            <div class="absolute right-5 top-full w-2 h-2 bg-zinc-800 border-r border-b border-zinc-700 rotate-45 -mt-1"></div>
+                        </div>
+                    </div>
+                    <span id="metricCap" class="font-semibold text-zinc-300 block mt-0.5">฿1,800</span>
                 </div>
             </div>
 
@@ -206,7 +232,20 @@
                         </div>
                     </div>
                     <div>
-                        <label class="text-xs font-medium text-zinc-500 block mb-1.5">เขาเคยใส่ให้เรา</label>
+                        <div class="relative inline-flex items-center mb-1.5">
+                            <label class="text-xs font-medium text-zinc-500">เขาเคยใส่ให้เรา</label>
+                            <button type="button" id="historyInfoBtn" class="ml-1 text-zinc-400 hover:text-zinc-600 focus:outline-none cursor-pointer" aria-label="ข้อมูลเพิ่มเติมเกี่ยวกับยอดใส่คืน">
+                                <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                            <!-- Tooltip สำหรับ Desktop (hover) และ Mobile (tap) -->
+                            <div id="historyTooltip" class="absolute right-0 bottom-full mb-2 hidden w-64 p-3 bg-zinc-900 text-zinc-200 text-xs leading-relaxed rounded-xl shadow-xl border border-zinc-800 z-30 pointer-events-auto">
+                                <p class="font-semibold text-white mb-1">ธรรมเนียมการใส่ซองคืน</p>
+                                <p class="text-zinc-300 text-[11px]">หากเจ้าภาพเคยใส่ซองให้เราในอดีต ตามมารยาทไทยไม่ควรใส่ต่ำกว่ายอดเดิมที่เคยได้รับ (+฿200 ช่วยค่าเงินเฟ้อ) ระบบจะใช้ยอดนี้เป็นเกณฑ์ขั้นต่ำให้อัตโนมัติ</p>
+                                <div class="absolute right-5 top-full w-2 h-2 bg-zinc-900 border-r border-b border-zinc-800 rotate-45 -mt-1"></div>
+                            </div>
+                        </div>
                         <div class="relative">
                             <span class="absolute left-3 top-2 text-xs text-zinc-400">฿</span>
                             <input type="number" id="historyInput" value="0" step="100" placeholder="0"
@@ -476,25 +515,31 @@
             });
         }
 
-        // จัดการ Tooltip ข้อมูลงบสังคม (Desktop: Hover, Mobile: Tap)
-        const budgetInfoBtn = document.getElementById('budgetInfoBtn');
-        const budgetTooltip = document.getElementById('budgetTooltip');
+        // ฟังก์ชันจัดการ Tooltip ข้อมูล (Desktop: Hover, Mobile: Tap)
+        function setupTooltip(btnId, tooltipId) {
+            const btn = document.getElementById(btnId);
+            const tooltip = document.getElementById(tooltipId);
+            if (!btn || !tooltip) return;
 
-        if (budgetInfoBtn && budgetTooltip) {
-            budgetInfoBtn.addEventListener('mouseenter', () => budgetTooltip.classList.remove('hidden'));
-            budgetInfoBtn.addEventListener('mouseleave', () => budgetTooltip.classList.add('hidden'));
+            btn.addEventListener('mouseenter', () => tooltip.classList.remove('hidden'));
+            btn.addEventListener('mouseleave', () => tooltip.classList.add('hidden'));
 
-            budgetInfoBtn.addEventListener('click', (e) => {
+            btn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                budgetTooltip.classList.toggle('hidden');
+                tooltip.classList.toggle('hidden');
             });
 
             document.addEventListener('click', (e) => {
-                if (!budgetInfoBtn.contains(e.target) && !budgetTooltip.contains(e.target)) {
-                    budgetTooltip.classList.add('hidden');
+                if (!btn.contains(e.target) && !tooltip.contains(e.target)) {
+                    tooltip.classList.add('hidden');
                 }
             });
         }
+
+        setupTooltip('budgetInfoBtn', 'budgetTooltip');
+        setupTooltip('historyInfoBtn', 'historyTooltip');
+        setupTooltip('targetInfoBtn', 'targetTooltip');
+        setupTooltip('capInfoBtn', 'capTooltip');
 
         document.getElementById('resetBtn').addEventListener('click', () => {
             location.reload();
